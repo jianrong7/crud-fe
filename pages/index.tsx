@@ -1,3 +1,4 @@
+import axios from "axios";
 import type {
   NextPage,
   GetServerSideProps,
@@ -32,11 +33,10 @@ const Home: NextPage = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // Fetch data from external API
-  const res = await fetch(`http://localhost:8080/`);
-  const data = await res.json();
-
+  const res = await axios.get(`http://localhost:8080/`);
+  const { data } = res;
   // Pass data to the page via props
   return { props: { data } };
 };

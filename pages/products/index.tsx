@@ -1,3 +1,4 @@
+import axios from "axios";
 import type {
   NextPage,
   GetServerSideProps,
@@ -6,12 +7,15 @@ import type {
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import ProductForm from "../../components/ProductForm";
 
 import type { Product } from "../../types/Product";
 
-const Home: NextPage = ({
+const ProductsPage: NextPage = ({
   products,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [showAddProductForm, setShowAddProductForm] = useState(false);
   return (
     <div>
       <Head>
@@ -23,6 +27,10 @@ const Home: NextPage = ({
       <main>
         <Link href="/">back to home</Link>
         <div>this is the main el</div>
+        <button onClick={() => setShowAddProductForm(!showAddProductForm)}>
+          add product
+        </button>
+        {showAddProductForm && <ProductForm type="add" />}
         <ol>
           {products.map((product: Product) => (
             <li key={product.id}>
@@ -45,11 +53,11 @@ const Home: NextPage = ({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch data from external API
-  const res = await fetch(`http://localhost:8080/api/products`);
-  const data = await res.json();
+  const res = await axios.get(`http://localhost:8080/api/products`);
+  const { data } = res;
 
   // Pass data to the page via props
   return { props: { products: data } };
 };
 
-export default Home;
+export default ProductsPage;
